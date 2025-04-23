@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazing Random Facts</title>
+    <style>
+        :root {
+            --primary-color: #2a5298;
+            --secondary-color: #ffd700;
+            --accent-color: #ff4b4b;
+            --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
+            --text-light: #ffffff;
+            --text-dark: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        #fact-display {
+            font-size: 1.3rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            background: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #e03e3e;
+            transform: scale(1.05);
+        }
+        
+        #category-select {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .category-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background: var(--secondary-color);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+        
+        #fact-counter {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+        }
+        
+        .share-container {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .share-btn {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* Loading animation */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">FactFusion</div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <h1>Random Fact Generator</h1>
+            
+            <div id="category-select">
+                <button class="category-btn active" data-category="all">All Facts</button>
+                <button class="category-btn" data-category="science">Science</button>
+                <button class="category-btn" data-category="history">History</button>
+                <button class="category-btn" data-category="animals">Animals</button>
+                <button class="category-btn" data-category="space">Space</button>
+            </div>
+            
+            <div id="fact-display">Click the button to discover an amazing fact!</div>
+            
+            <div class="button-container">
+                <button id="get-fact-btn" onclick="getRandomFact()">Get Random Fact</button>
+                <button id="save-fact-btn" onclick="saveFact()">Save This Fact</button>
+            </div>
+            
+            <div id="fact-counter">Facts viewed: 0</div>
+            
+            <div class="share-container">
+                <button class="share-btn" onclick="shareFact()">Share this fact</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        &copy; 2025 FactFusion | Your Daily Dose of Knowledge
+    </footer>
+
+    <script>
+        // Fact database with categories
+        const factDatabase = [
+            { text: "A group of flamingos is called a flamboyance.", category: "animals" },
+            { text: "Honey never spoils; archeologists found edible honey in Egyptian tombs.", category: "science" },
+            { text: "Octopuses have three hearts and can change color to blend into surroundings.", category: "animals" },
+            { text: "The shortest war in history was between Britain and Zanzibar in 1896, lasting only 38 minutes.", category: "history" },
+            { text: "Bananas are botanically classified as berries, but strawberries aren't.", category: "science" },
+            { text: "A day on Venus is longer than its year—it takes longer to rotate on its axis than to orbit the Sun.", category: "space" },
+            { text: "Sharks can detect blood in water from up to 3 miles away.", category: "animals" },
+            { text: "The Eiffel Tower can be 15 cm taller in summer due to thermal expansion from heat.", category: "science" },
+            { text: "Sloths can hold their breath underwater for up to 40 minutes, longer than dolphins.", category: "animals" },
+            { text: "A jiffy is an actual unit of time: 1/100th of a second in electronics.", category: "science" },
+            { text: "The human body contains about 0.2 milligrams of gold, mostly in the blood.", category: "science" },
+            { text: "Cows have best friends and can become stressed when separated from them.", category: "animals" },
+            { text: "The moon experiences moonquakes, similar to earthquakes on Earth.", category: "space" },
+            { text: "A single cloud can weigh over a million pounds.", category: "science" },
+            { text: "Polar bears have black skin under their white fur to better absorb heat from the sun.", category: "animals" },
+            { text: "The first computer 'bug' was an actual moth trapped in a Harvard computer in 1947.", category: "history" },
+            { text: "Butterflies taste with their feet, not their mouths.", category: "animals" },
+            { text: "There are more stars in the universe than grains of sand on all Earth's beaches.", category: "space" },
+            { text: "An octopus can regrow a limb in around 100 days if lost.", category: "animals" },
+            { text: "The stapes in your ear is the smallest bone in the human body, measuring just 2.8mm.", category: "science" },
+            { text: "A group of crows is called a murder.", category: "animals" },
+            { text: "The smell after rain is called 'petrichor' and is caused by bacteria in the soil.", category: "science" },
+            { text: "Venus rotates in the opposite direction to most other planets in our solar system.", category: "space" },
+            { text: "A blue whale's heart can weigh up to 400 pounds and be the size of a small car.", category: "animals" },
+            { text: "The Great Wall of China is not visible from space with the naked eye, contrary to popular belief.", category: "history" },
+            { text: "Some cats can develop allergies to humans.", category: "animals" },
+            { text: "A snail can sleep for three years without eating when the weather doesn't suit it.", category: "animals" },
+            { text: "Ebenezer Place in Scotland is the shortest street in the world at just 6 feet 9 inches.", category: "history" },
+            { text: "Adult elephants are the only mammals that cannot jump.", category: "animals" },
+            { text: "The Anglo-Zanzibar War of 1896 is considered the shortest war in history, lasting 38-45 minutes.", category: "history" },
+            { text: "The Sun makes up 99.86% of the mass in our solar system.", category: "space" },
+            { text: "Hummingbirds are the only birds that can fly backwards.", category: "animals" },
+            { text: "A lightning bolt can reach temperatures of 53,000 degrees Fahrenheit, hotter than the surface of the sun.", category: "science" },
+            { text: "The first person convicted of speeding was going 8 mph in a 2 mph zone in 1896.", category: "history" },
+            { text: "There are more possible iterations of a game of chess than there are atoms in the known universe.", category: "science" },
+            { text: "The Hubble Space Telescope can see up to 13 billion light-years away.", category: "space" },
+            { text: "A day on Mercury lasts approximately 176 Earth days.", category: "space" },
+            { text: "The world's oldest known living tree is over 5,000 years old.", category: "science" },
+            { text: "Dolphins have names for each other and can call to each other specifically.", category: "animals" },
+            { text: "The first oranges weren't orange—they were green.", category: "history" }
+        ];
+
+        // Variables
+        let currentFactIndex = -1;
+        let viewCount = 0;
+        let currentCategory = "all";
+        let savedFacts = [];
+
+        // Get references to DOM elements
+        const factDisplay = document.getElementById('fact-display');
+        const factCounter = document.getElementById('fact-counter');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+
+        // Initialize
+        window.onload = function() {
+            // Get saved facts from localStorage if available
+            const savedFactsStr = localStorage.getItem('savedFacts');
+            if (savedFactsStr) {
+                savedFacts = JSON.parse(savedFactsStr);
+            }
+            
+            // Set up category buttons
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    // Update current category
+                    currentCategory = this.dataset.category;
+                    // Get a new fact for this category
+                    getRandomFact();
+                });
+            });
+        };
+
+        // Get a random fact based on selected category
+        function getRandomFact() {
+            // Show loading state
+            factDisplay.classList.add('loading');
+            
+            // Filter facts by category
+            let availableFacts = factDatabase;
+            if (currentCategory !== "all") {
+                availableFacts = factDatabase.filter(fact => fact.category === currentCategory);
+            }
+            
+            // Simulate network delay for effect (would be real API call in production)
+            setTimeout(() => {
+                // Get a random fact from available facts
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * availableFacts.length);
+                } while (randomIndex === currentFactIndex && availableFacts.length > 1);
+                
+                currentFactIndex = randomIndex;
+                const fact = availableFacts[randomIndex];
+                
+                // Update display
+                factDisplay.textContent = fact.text;
+                factDisplay.classList.remove('loading');
+                
+                // Update counter
+                viewCount++;
+                factCounter.textContent = `Facts viewed: ${viewCount}`;
+                
+                // Save view count to localStorage
+                localStorage.setItem('factViewCount', viewCount);
+            }, 600);
+        }
+
+        // Save current fact
+        function saveFact() {
+            if (currentFactIndex === -1) return;
+            
+            const currentFact = factDatabase.find(fact => fact.text === factDisplay.textContent);
+            if (currentFact) {
+                // Check if already saved
+                if (!savedFacts.some(f => f.text === currentFact.text)) {
+                    savedFacts.push(currentFact);
+                    localStorage.setItem('savedFacts', JSON.stringify(savedFacts));
+                    alert('Fact saved to your collection!');
+                } else {
+                    alert('This fact is already in your collection!');
+                }
+            }
+        }
+
+        // Share fact
+        function shareFact() {
+            if (currentFactIndex === -1) return;
+            
+            // In a real app, this would use the Web Share API
+            // For now, we'll simulate copying to clipboard
+            const textArea = document.createElement('textarea');
+            textArea.value = factDisplay.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Fact copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
